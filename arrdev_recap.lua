@@ -20,7 +20,7 @@ adeps={
     "Pier Pressure",
     "Public Relations",
     "Marta Complex",
-    "Beef Consommé",
+    "Beef ConsommÃ©",
     "Shock and Aww",
     "Staff Infection",
     "Missing Kitty",
@@ -34,7 +34,7 @@ adeps={
   {
     "The One Where Michael Leaves",
     "The One Where They Build a House",
-    "¡Amigos!",
+    "Â¡Amigos!",
     "Good Grief",
     "Sad Sack",
     "Afternoon Delight",
@@ -222,8 +222,8 @@ end
 local function recap_pagename(s,e)
   --get the ep title
   local title=adeps[s][e]
-  --replace the é in Beef Consommé
-  title=string.gsub(title,'é','e')
+  --replace the Ã© in Beef ConsommÃ©
+  title=string.gsub(title,'Ã©','e')
   --transform to CamelCased WikiWord
   title=string.gsub(title,' (%l?)',string.upper)
   --Remove all non-alphanumeric characters
