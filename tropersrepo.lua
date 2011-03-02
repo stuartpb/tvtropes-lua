@@ -84,10 +84,10 @@ local function push(notes)
 
   print(string.format("Posting new version of %s...",target))
 
-  local posted
-  while not posted do
-    posted=tvtropes.post(target,updated,user,notes)
-    if not posted then print"  Retrying..." end
+
+  local posted, errcode, msg=tvtropes.post(target,updated,user,notes)
+  if not posted then
+    io.write("Error code ", errcode, ":\n  ",msg,"\n")
   end
 end
 
