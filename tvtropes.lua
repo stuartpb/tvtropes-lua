@@ -1,14 +1,18 @@
 --Required to send to TVTropes site.
-local http = require"socket.http"
+local http = require "socket.http"
+
+--It's a pain to write the stupid "source" that LuaSocket expects
+local ltn12 = require "ltn12"
 
 --Required to create page post data.
 local urlencode = require "urlencode"
 
+--module table
 local tvtropes={}
 
 --Function that returns the authenticated TVTropes URL for the given page.
-local function authpageurl(page)
-  return "http://:foamy@tvtropes.org/pmwiki/pmwiki.php/"..page
+local function pageurl(page)
+  return "http://tvtropes.org/pmwiki/pmwiki.php/"..page
 end
 
 local function fullname(page)
@@ -21,20 +25,54 @@ local function fullname(page)
 end
 
 --Function that posts the given page.
-function tvtropes.post(page, body, author, reason)
+function tvtropes.post(page, body, author, passphrase, reason)
 
+  --Variable validation
+
+  --Validate page name
   page=fullname(page)
 
+  --Assert that there's a body to send
   assert(type(body)=="string","Page body required")
 
-  local response =
-    {http.request(authpageurl(page),
-      urlencode.table{
-        action="post", post="save",
-        pagename=page, text=body,
-        author=author or "Anonymous",
-        reason=reason or ""
-      })}
+  --Validate that the author and body are both only
+  --letters and numbers (a TVTropes sanity check,
+  --and this verifies that the Cookie field is valid)
+  assert(not string.find(author,"%W"),
+    "Author name must be only alphanumeric characters")
+  assert(not string.find(passphrase,"%W"),
+    "Passphrase must be only alphanumeric characters")
+
+  local responsebody
+
+  local function rcvbody(input)
+    responsebody=input
+  end
+
+  local form = urlencode.table{
+    action="post", post="save",
+    pagename=page, text=body,
+    author=author,
+    reason=reason or "" --reason needs to be in the table
+  }
+
+  local response = {
+    http.request{
+      url=pageurl(page),
+      method="POST",
+      headers={
+        ["Content-Length"]=#form,
+        ["Content-Type"]="application/x-www-form-urlencoded",
+        ["Cookie"]=table.concat{
+          "author=",author,"; ",
+          "troperhandle=",author,"; ",
+          "mazeltov=",passphrase,"; ",
+          "tos=yes"
+        },
+      },--headers
+      source=ltn12.source.string(form), --source
+      sink=rcvbody
+    }} --response
 
   --Error on any socket errors
   assert(response[1],response[2])
@@ -42,7 +80,7 @@ function tvtropes.post(page, body, author, reason)
   --If it doesn't return Found, return nil, the status, and the body:
   --sometimes it just rejects the password for some reason.
   if tonumber(response[2])~=302 then
-    return nil, response[2], response[1]
+    return nil, response[2], responsebody
   else return true
   end
 end
@@ -66,7 +104,7 @@ function tvtropes.get(page)
   page=fullname(page)
 
   local body, code = http.request(
-    authpageurl(page)..'?action=source')
+    pageurl(page)..'?action=source')
 
   --Trigger error on socket failure
   assert(body,code)
