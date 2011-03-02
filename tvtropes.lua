@@ -25,7 +25,7 @@ local function fullname(page)
 end
 
 --Function that posts the given page.
-function tvtropes.post(page, body, author, passphrase, reason)
+function tvtropes.post(page, body, handle, passphrase, reason)
 
   --Variable validation
 
@@ -39,7 +39,7 @@ function tvtropes.post(page, body, author, passphrase, reason)
   --letters and numbers (a TVTropes sanity check,
   --and this verifies that the Cookie field is valid)
   assert(not string.find(author,"%W"),
-    "Author name must be only alphanumeric characters")
+    "Handle must be only alphanumeric characters")
   assert(not string.find(passphrase,"%W"),
     "Passphrase must be only alphanumeric characters")
 
@@ -52,8 +52,7 @@ function tvtropes.post(page, body, author, passphrase, reason)
   local form = urlencode.table{
     action="post", post="save",
     pagename=page, text=body,
-    author=author,
-    reason=reason or "" --reason needs to be in the table
+    reason=reason or "" --if no passed reason, submit blank
   }
 
   local response = {
@@ -64,8 +63,7 @@ function tvtropes.post(page, body, author, passphrase, reason)
         ["Content-Length"]=#form,
         ["Content-Type"]="application/x-www-form-urlencoded",
         ["Cookie"]=table.concat{
-          "author=",author,"; ",
-          "troperhandle=",author,"; ",
+          "troperhandle=",handle,"; ",
           "mazeltov=",passphrase,"; ",
           "tos=yes"
         },
