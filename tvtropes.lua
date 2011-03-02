@@ -38,9 +38,9 @@ function tvtropes.post(page, body, handle, passphrase, reason)
   --Validate that the author and body are both only
   --letters and numbers (a TVTropes sanity check,
   --and this verifies that the Cookie field is valid)
-  assert(not string.find(author,"%W"),
+  assert(not (string.find(handle,"%W") or handle==""),
     "Handle must be only alphanumeric characters")
-  assert(not string.find(passphrase,"%W"),
+  assert(not (string.find(passphrase,"%W") or passphrase==""),
     "Passphrase must be only alphanumeric characters")
 
   local responsebody
