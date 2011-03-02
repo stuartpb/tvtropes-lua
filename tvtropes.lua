@@ -46,7 +46,12 @@ function tvtropes.post(page, body, handle, passphrase, reason)
   local responsebody
 
   local function rcvbody(input)
-    responsebody=input
+	if responsebody then --if this sink has been called before
+	  --add to the existing response body
+      responsebody = responsebody..input
+	else
+      responsebody = input
+	end
   end
 
   local form = urlencode.table{
@@ -65,7 +70,6 @@ function tvtropes.post(page, body, handle, passphrase, reason)
         ["Cookie"]=table.concat{
           "troperhandle=",handle,"; ",
           "mazeltov=",passphrase,"; ",
-          "tos=yes"
         },
       },--headers
       source=ltn12.source.string(form), --source
