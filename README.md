@@ -1,7 +1,5 @@
 These scripts require LuaSocket and its HTTP module.
 
-While these scripts worked back when all it took to edit TVTropes was the password "foamy", they have been rendered inoperable by the changes that made registration mandatory to edit. To fix it, the post request will need to be changed to support these cookies:
+You must be known on TVTropes to post using tvtropes.post. You must pass your troper handle and your passphrase.
 
-- `author` and `troperhandle` (both "`STUART`" in my case, possibly different for users with punctuation)
-- `mazeltov` (knower passphrase)
-- `tos` ("`yes`")
+You can test the scripts by creating a file containing your troper handle (named "handle") and your passphrase (named "passphrase") and running test.lua.
