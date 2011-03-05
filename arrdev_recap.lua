@@ -232,7 +232,11 @@ local function recap_pagename(s,e)
   return string.format("Recap/ArrestedDevelopmentS%iE%i%s",s,e,title)
 end
 
+-- DO NOT USE THIS FUNCTION
+-- (If updated to work with passphrases) this function will clobber any episode with its
+-- starter template.
 local function post_ad_recap_starter(s,e)
+	print(string.format('Posting initial page for Season %i Episode %i, "%s"...',s,e,adeps[s][e]))
   return tvtropes.post(
     recap_pagename(s,e),
     string.format(
@@ -251,6 +255,7 @@ local function update_links(reason)
     elseif s==1 and e==13 then
       print "(Skipping Beef Consomme because the links go all screwy)"
     else
+      print(string.format('Updating Season %i Episode %i, "%s"...',s,e,adeps[s][e]))
       local pagename=recap_pagename(s,e)
       local pageasis=tvtropes.get(pagename)
       local gsubsafelinks = string.gsub(ad_ep_links(s,e),"%%","%%%%")
@@ -269,7 +274,6 @@ end
 local function for_all_eps(f)
   for s=1,#adeps do
     for e=1,#adeps[s] do
-      print(string.format('Doing Season %i Episode %i, "%s"...',s,e,adeps[s][e]))
       f(s,e)
     end
   end
