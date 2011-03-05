@@ -232,20 +232,6 @@ local function recap_pagename(s,e)
   return string.format("Recap/ArrestedDevelopmentS%iE%i%s",s,e,title)
 end
 
--- DO NOT USE THIS FUNCTION
--- (If updated to work with passphrases) this function will clobber any episode with its
--- starter template.
-local function post_ad_recap_starter(s,e)
-	print(string.format('Posting initial page for Season %i Episode %i, "%s"...',s,e,adeps[s][e]))
-  return tvtropes.post(
-    recap_pagename(s,e),
-    string.format(
-      "\n\n%s\n!The ''ArrestedDevelopment'' episode \"%s\" provides examples of:\n\n",
-        ad_ep_links(s,e),adeps[s][e]),
-    "STUART",
-    "Adding interwiki links and example header automatically (Ask me about Lua)")
-end
-
 local function update_links(reason)
   return function(s,e)
     --until comment syntax is changed, Amigos is manual-only
