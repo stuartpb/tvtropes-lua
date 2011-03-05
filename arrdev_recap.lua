@@ -1,13 +1,16 @@
 --encoding: UTF-8
 
+--Required to update pages
+local tvtropes = require "tvtropes"
 --Required to post pages
-local tvtropes=require "tvtropes"
+tvtropes.post_known = require "tvtropes_post_known"
+
 --Required for encoding Wikipedia article titles
 local urlencode=require "urlencode"
 
 --Arrested Development data----------------------------------------------------
 adeps={
-  {
+  { -- Season 1 (22 episodes):
     "Pilot",
     "Top Banana",
     "Bringing Up Buster",
@@ -31,7 +34,7 @@ adeps={
     "Not Without My Daughter",
     "Let 'Em Eat Cake"
   },
-  {
+  { -- Season 2 (18 episodes):
     "The One Where Michael Leaves",
     "The One Where They Build a House",
     "¡Amigos!",
@@ -51,7 +54,7 @@ adeps={
     "Spring Breakout",
     "Righteous Brothers",
   },
-  {
+  { -- Season 3 (13 episodes):
     "The Cabin Show",
     "For British Eyes Only",
     "Forget-Me-Now",
@@ -218,7 +221,8 @@ Watch now: [[$hulu Hulu]] -- [[$netflix Netflix]]
 %%ENDLINKS%%
 ]=]
   function ad_ep_links(s,e)
-    return (string.gsub(template,"%$(%w+)",function(token) return tokens[token](s,e) end))
+    return (string.gsub(template, "%$(%w+)",
+			function(token) return tokens[token](s,e) end))
   end
 end
 
@@ -253,16 +257,19 @@ local function update_links(reason)
     elseif s==1 and e==13 then
       print "(Skipping Beef Consomme because the links go all screwy)"
     else
-      print(string.format('Updating Season %i Episode %i, "%s"...',s,e,adeps[s][e]))
-      local pagename=recap_pagename(s,e)
-      local pageasis=tvtropes.get(pagename)
-      local gsubsafelinks = string.gsub(ad_ep_links(s,e),"%%","%%%%")
+      print(string.format('Updating Season %i Episode %i, "%s"...',
+				s, e, adeps[s][e]))
+
+      local pagename = recap_pagename(s,e)
+      local pageasis = tvtropes.get(pagename)
+      local gsubsafelinks = string.gsub(ad_ep_links(s,e), "%%", "%%%%")
+			local updatedpage = string.gsub(pageasis,
+				"%%%%STARTLINKS%%%%.-%%%%ENDLINKS%%%%", gsubsafelinks)
+
       local success
       while not success do
         local code
-        success, code = tvtropes.post(pagename,
-          string.gsub(pageasis,"%%%%STARTLINKS%%%%.-%%%%ENDLINKS%%%%",gsubsafelinks),
-          "STUART",reason)
+        success, code = tvtropes.post_known(pagename,updatedpage,reason)
         if not success then print("Retrying... "..code) end
       end
     end
