@@ -50,7 +50,3 @@ This script tests the TVTropes posting functionality by editing the WikiSandbox 
 ### arrdev_recap.lua
 
 A script for generating Recap pages for Arrested Development episodes.
-
-### tropersrepo.lua
-
-A script for posting Lua scripts to a Tropers page (obsolete).
