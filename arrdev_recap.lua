@@ -202,6 +202,10 @@ end
 -------------------------------------------------------------------------------
 
 --Arrested Development TV Tropes Recap stuff-----------------------------------
+
+--function ad_ep_links(s,e)
+--	Returns the link section
+--  for Arrested Development season s, episode e.
 local ad_ep_links
 do
   local template=[=[
@@ -218,7 +222,9 @@ Watch now: [[$hulu Hulu]] -- [[$netflix Netflix]]
   end
 end
 
---Function that returns the page name of the episode's TVTropes Recap page.
+--function recap_pagename(s,e)
+--	Returns the TVTropes Recap page name
+--  for Arrested Development season s, episode e.
 local function recap_pagename(s,e)
   --get the ep title
   local title=adeps[s][e]
@@ -232,6 +238,12 @@ local function recap_pagename(s,e)
   return string.format("Recap/ArrestedDevelopmentS%iE%i%s",s,e,title)
 end
 
+--function recap_pagename(s,e)
+--	Returns a function that updates the links on the Recap page
+--  for Arrested Development season s, episode e
+--  (provided that episode is not one of the two with non-ASCII
+--  characters in the title as TV Tropes' stupid comment syntax
+--  breaks the Mediawiki links for them).
 local function update_links(reason)
   return function(s,e)
     --until comment syntax is changed, Amigos is manual-only
