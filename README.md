@@ -32,8 +32,8 @@ Contains a function that posts to TV Tropes using a predefined handle and passph
 
 It can be integrated into the main tvtropes module with something like this:
 
-  local tvtropes = require "tvtropes"
-	tvtropes.post_known = require "tvtropes_post_known"
+    local tvtropes = require "tvtropes"
+      tvtropes.post_known = require "tvtropes_post_known"
 
 ## Scripts
 
